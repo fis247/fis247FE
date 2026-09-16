@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  /* Dark canvas */
+  --color-ink: #060D1F;
+  --color-ink-2: #0A1430;
+  --color-ink-3: #122048;
+
+  /* Brand (from FIS247 logo) */
+  --color-navy: #2b3f8f;
+  --color-navy-2: #4457ae;
+  --color-navy-3: #7d8cd4;
+  --color-orange: #f16522;
+  --color-orange-2: #ff8547;
+
+  /* Light canvas */
+  --color-mist: #f4f7fc;
+  --color-muted: #93a1c4;
+  --color-slateink: #1c2540;
+
+  --font-sans: var(--font-bvp), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-marquee-rev: marquee-rev 38s linear infinite;
+  --animate-drift: drift 28s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.6s ease-out infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-rev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(241, 101, 34, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(241, 101, 34, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(241, 101, 34, 0); }
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--color-ink);
+  color: #eef2ff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Gradient headlines, green -> orange (FPT family palette).
+   Three variants so the same transition holds on photography,
+   on the dark canvas, and on the light canvas. */
+.grad-head {
+  background: linear-gradient(95deg, #8ed96b 0%, #cdc059 42%, #ff8a3c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 16px rgba(0, 0, 0, 0.5));
+}
+.grad-text {
+  background: linear-gradient(95deg, #7ccf58 0%, #bdbb56 45%, var(--color-orange-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.grad-text-light {
+  background: linear-gradient(95deg, #4fa03a 0%, #8d9440 45%, var(--color-orange) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft aurora glow used behind dark sections */
+.aurora {
+  background:
+    radial-gradient(900px 520px at 72% 0%, rgba(68, 87, 174, 0.38), transparent 62%),
+    radial-gradient(680px 420px at 12% 18%, rgba(241, 101, 34, 0.14), transparent 60%),
+    radial-gradient(900px 640px at 50% 110%, rgba(43, 63, 143, 0.28), transparent 62%);
+}
+
+.edge-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
