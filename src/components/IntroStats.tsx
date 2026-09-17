@@ -1,14 +1,75 @@
 import Image from "next/image";
 import { Counter, Reveal } from "./Reveal";
 
-const STATS = [
-  { to: 20, suffix: "+", label: "Năm kinh nghiệm" },
-  { to: 63, suffix: "", label: "Tỉnh thành có mặt" },
-  { to: 500, suffix: "+", label: "Khách hàng tổ chức" },
-  { to: 12000, suffix: "+", label: "Thiết bị quản lý" },
-  { to: 6, suffix: "", label: "Dòng robot dịch vụ" },
-  { to: 24, suffix: "/7", label: "Trực vận hành" },
+/**
+ * Số liệu lấy nguyên văn từ fis247.fpt.com.
+ * `span` quyết định độ lớn của ô trong lưới bento — số liệu mạnh nhất chiếm ô to.
+ */
+type Stat = {
+  to: number;
+  suffix: string;
+  unit?: string;
+  desc: string;
+  span: string;
+  size: "hero" | "md" | "sm";
+};
+
+const STATS: Stat[] = [
+  {
+    to: 50,
+    suffix: "%",
+    unit: "ATM",
+    desc: "Được FPT IS bảo hành, bảo trì trên toàn quốc",
+    span: "lg:col-span-8",
+    size: "hero",
+  },
+  { to: 3400, suffix: "+", desc: "Nhân viên", span: "lg:col-span-4", size: "md" },
+
+  {
+    to: 2000,
+    suffix: "+",
+    desc: "Chuyên gia tư vấn cấp cao, kỹ sư trình độ quốc tế",
+    span: "lg:col-span-4",
+    size: "md",
+  },
+  {
+    to: 50,
+    suffix: "+",
+    unit: "Trung tâm dịch vụ",
+    desc: "Mạng lưới trung tâm dịch vụ công nghệ phủ kín lãnh thổ Việt Nam",
+    span: "lg:col-span-4",
+    size: "md",
+  },
+  {
+    to: 10,
+    suffix: "",
+    unit: "triệu USD",
+    desc: "Kỷ lục hợp đồng dịch vụ",
+    span: "lg:col-span-4",
+    size: "md",
+  },
+
+  { to: 100, suffix: "+", desc: "Khách hàng quốc tế", span: "lg:col-span-3", size: "sm" },
+  {
+    to: 13,
+    suffix: "+",
+    unit: "Đối tác",
+    desc: "Đối tác chiến lược với hãng công nghệ toàn cầu lớn",
+    span: "lg:col-span-3",
+    size: "sm",
+  },
+  { to: 24, suffix: "x7", desc: "Cam kết cung cấp dịch vụ", span: "lg:col-span-3", size: "sm" },
+  {
+    to: 2000,
+    suffix: "+",
+    desc: "Chứng chỉ quốc tế từ Cisco, IBM, MS, Oracle, SAP, HP...",
+    span: "lg:col-span-3",
+    size: "sm",
+  },
 ];
+
+const HERO = STATS[0];
+const REST = STATS.slice(1);
 
 export function IntroStats() {
   return (
@@ -86,28 +147,65 @@ export function IntroStats() {
         <div className="absolute inset-0 bg-ink/25" />
         <div className="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-ink" />
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-transparent to-ink" />
-        <span className="absolute bottom-7 left-1/2 -translate-x-1/2 text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white/70">
+        <span className="absolute bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-[15px] font-semibold uppercase tracking-[0.2em] text-white/85 sm:text-[17px]">
           Trụ sở &amp; đội ngũ FIS247
         </span>
       </div>
 
       <div className="relative mx-auto max-w-[1280px] px-5 sm:px-8">
-        <div className="grid grid-cols-2 gap-y-12 border-t border-white/12 pt-14 md:grid-cols-3 lg:grid-cols-6 lg:gap-y-0">
-          {STATS.map((s, i) => (
-            <Reveal
-              key={s.label}
-              delay={i * 0.06}
-              className="px-2 text-center lg:border-l lg:border-white/10 lg:first:border-l-0"
-            >
-              <div className="text-[32px] font-bold tabular-nums tracking-tight text-white sm:text-[40px]">
+        {/* Số liệu thuần chữ: không ô, không viền — phân cấp bằng cỡ chữ và khoảng trắng */}
+        <Reveal className="mt-24 flex flex-col items-baseline gap-x-10 gap-y-4 lg:flex-row">
+          <span className="shrink-0 text-[84px] font-bold leading-[1] tracking-tight sm:text-[120px] lg:text-[148px]">
+            <span className="grad-text tabular-nums">
+              <Counter to={HERO.to} suffix={HERO.suffix} />
+            </span>
+            {HERO.unit && (
+              <span className="ml-4 align-baseline text-[40px] font-semibold text-white sm:text-[52px]">
+                {HERO.unit}
+              </span>
+            )}
+          </span>
+          <p className="max-w-[26ch] text-[20px] leading-relaxed text-white/60 sm:text-[23px]">
+            {HERO.desc}
+          </p>
+        </Reveal>
+
+        {/* Ba hàng cố định — số, đơn vị, mô tả — nên các ô luôn thẳng hàng với nhau,
+            kể cả ô có đơn vị dài như "Trung tâm dịch vụ" */}
+        <div className="mt-20 grid gap-x-10 gap-y-16 sm:grid-cols-2 lg:grid-cols-4">
+          {REST.map((s, i) => (
+            <Reveal key={s.desc} delay={(i % 4) * 0.07}>
+              <div className="grad-text text-[54px] font-bold tabular-nums leading-[1.05] tracking-tight sm:text-[60px] xl:text-[72px]">
                 <Counter to={s.to} suffix={s.suffix} />
               </div>
-              <p className="mx-auto mt-2 max-w-[16ch] text-balance text-[13.5px] leading-snug text-white/55">
-                {s.label}
+              {/* Luôn chiếm một dòng dù có đơn vị hay không, để mô tả bên dưới thẳng hàng */}
+              <div className="mt-2.5 min-h-[1.5em] whitespace-nowrap text-[22px] font-semibold leading-tight text-white sm:text-[25px]">
+                {s.unit ?? ""}
+              </div>
+              <p className="mt-4 max-w-[30ch] text-[16px] leading-relaxed text-white/55 sm:text-[17px]">
+                {s.desc}
               </p>
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.1} className="mt-14 text-center">
+          <a
+            href="#lien-he"
+            className="group inline-flex items-center gap-3 rounded-[6px] bg-orange px-7 py-[15px] text-[19px] font-semibold leading-tight text-white transition-colors hover:bg-orange-2"
+          >
+            Liên hệ ngay
+            <svg
+              viewBox="0 0 20 20"
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            >
+              <path d="M3 10h13M11 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,21 +1,44 @@
 import { Reveal } from "./Reveal";
 
-/** `plate`: logo giữ nguyên mực đen bản gốc nên cần tấm nền trắng đỡ phía sau. */
-type Logo = { src: string; alt: string; plate?: boolean };
+/**
+ * `w`/`h` là kích thước thật của file. Khai báo sẵn để trình duyệt tính được
+ * tỉ lệ và chừa đúng chỗ ngay từ đầu — nếu thiếu, ảnh chưa tải xong sẽ rộng 0px
+ * làm dải co lại rồi giãn ra, sinh khoảng trống lúc tải trang.
+ *
+ * `plate`: logo giữ nguyên mực đen bản gốc nên cần tấm nền trắng đỡ phía sau.
+ */
+type Logo = { src: string; alt: string; w: number; h: number; plate?: boolean };
 
 const LOGOS: Logo[] = [
-  { src: "/images/partners/p1.webp", alt: "Cisco Gold Certified Partner" },
-  { src: "/images/partners/p2.webp", alt: "HP" },
-  { src: "/images/partners/p3.webp", alt: "SAP Gold Partner" },
-  { src: "/images/partners/p4.webp", alt: "IBM Platinum Business Partner" },
-  { src: "/images/partners/p5.webp", alt: "Oracle Platinum Partner" },
-  { src: "/images/partners/p6.webp", alt: "Dell Technologies Titanium Partner" },
-  { src: "/images/partners/p7.webp", alt: "Fortinet Engage Advanced Partner", plate: true },
-  { src: "/images/partners/p8.webp", alt: "Check Point Partner" },
-  { src: "/images/partners/p9.webp", alt: "HPE Gold Solution Provider" },
-  { src: "/images/partners/p10.webp", alt: "Microsoft Gold Partner", plate: true },
-  { src: "/images/partners/p11.webp", alt: "Salesforce Reseller Consulting Partner" },
-  { src: "/images/partners/p12.webp", alt: "Lenovo" },
+  { src: "/images/partners/p1.webp", alt: "Cisco Gold Certified Partner", w: 225, h: 240 },
+  { src: "/images/partners/p2.webp", alt: "HP", w: 520, h: 520 },
+  { src: "/images/partners/p3.webp", alt: "SAP Gold Partner", w: 520, h: 260 },
+  { src: "/images/partners/p4.webp", alt: "IBM Platinum Business Partner", w: 520, h: 262 },
+  { src: "/images/partners/p5.webp", alt: "Oracle Platinum Partner", w: 500, h: 200 },
+  { src: "/images/partners/p6.webp", alt: "Dell Technologies Titanium Partner", w: 520, h: 151 },
+  {
+    src: "/images/partners/p7.webp",
+    alt: "Fortinet Engage Advanced Partner",
+    w: 320,
+    h: 120,
+    plate: true,
+  },
+  { src: "/images/partners/p8.webp", alt: "Check Point Partner", w: 520, h: 520 },
+  { src: "/images/partners/p9.webp", alt: "HPE Gold Solution Provider", w: 500, h: 500 },
+  {
+    src: "/images/partners/p10.webp",
+    alt: "Microsoft Gold Partner",
+    w: 520,
+    h: 193,
+    plate: true,
+  },
+  {
+    src: "/images/partners/p11.webp",
+    alt: "Salesforce Reseller Consulting Partner",
+    w: 200,
+    h: 100,
+  },
+  { src: "/images/partners/p12.webp", alt: "Lenovo", w: 520, h: 173 },
 ];
 
 export function Alliances() {
@@ -31,37 +54,47 @@ export function Alliances() {
         </Reveal>
       </div>
 
-      {/* Dải logo trượt liên tục từ trái sang phải */}
+      {/* Ba bản sao giống hệt nhau nối đuôi, mỗi bản tự trượt đúng 100% bề rộng
+          của chính nó. Khi vòng lặp quay lại, bản kế tiếp đã nằm sẵn đúng vị trí
+          bản trước nên mắt không nhận ra điểm nối — dải không có đầu, không có cuối.
+          Dùng 3 bản (thay vì 2) để màn hình siêu rộng vẫn luôn được phủ kín. */}
       <Reveal delay={0.1} className="mt-12">
-        <div className="edge-fade overflow-hidden">
-          <div className="flex w-max animate-marquee-rev items-center gap-14 sm:gap-20">
-            {[...LOGOS, ...LOGOS].map((logo, i) => {
-              const img = (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={logo.src}
-                  // Bản lặp lại chỉ để cuộn liền mạch, không đọc lại cho trình đọc màn hình
-                  alt={i < LOGOS.length ? logo.alt : ""}
-                  aria-hidden={i >= LOGOS.length}
-                  draggable={false}
-                  className="h-[54px] w-auto max-w-[200px] select-none object-contain sm:h-[62px]"
-                />
-              );
+        <div className="edge-fade flex overflow-hidden">
+          {[0, 1, 2].map((copy) => (
+            <div
+              key={copy}
+              className="flex shrink-0 animate-marquee-track items-center"
+              aria-hidden={copy > 0}
+            >
+              {LOGOS.map((logo) => {
+                const img = (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={logo.src}
+                    // Bản lặp chỉ để cuộn liền mạch, không cho trình đọc màn hình đọc lại
+                    alt={copy === 0 ? logo.alt : ""}
+                    width={logo.w}
+                    height={logo.h}
+                    draggable={false}
+                    className="h-[54px] w-auto select-none object-contain sm:h-[62px]"
+                  />
+                );
 
-              return logo.plate ? (
-                <div
-                  key={`${logo.src}-${i}`}
-                  className="flex shrink-0 items-center justify-center rounded-xl bg-white px-5 py-3"
-                >
-                  {img}
-                </div>
-              ) : (
-                <div key={`${logo.src}-${i}`} className="flex shrink-0 items-center">
-                  {img}
-                </div>
-              );
-            })}
-          </div>
+                return logo.plate ? (
+                  <div
+                    key={logo.src}
+                    className="mr-14 flex shrink-0 items-center justify-center rounded-xl bg-white px-5 py-3 sm:mr-20"
+                  >
+                    {img}
+                  </div>
+                ) : (
+                  <div key={logo.src} className="mr-14 flex shrink-0 items-center sm:mr-20">
+                    {img}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </Reveal>
     </section>

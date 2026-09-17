@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
+import { BackToTop } from "@/components/BackToTop";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 
 const beVietnamPro = Be_Vietnam_Pro({
   variable: "--font-bvp",
@@ -20,7 +23,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" className={`${beVietnamPro.variable} antialiased`}>
-      <body className="flex min-h-screen flex-col bg-ink">{children}</body>
+      <body className="flex min-h-screen flex-col bg-ink">
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <BackToTop />
+      </body>
     </html>
   );
 }

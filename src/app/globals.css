@@ -22,6 +22,9 @@
 
   --animate-marquee: marquee 38s linear infinite;
   --animate-marquee-rev: marquee-rev 38s linear infinite;
+  --animate-marquee-track: marquee-track 42s linear infinite;
+  --animate-track-left: track-left 46s linear infinite;
+  --animate-track-right: track-right 46s linear infinite;
   --animate-drift: drift 28s linear infinite;
   --animate-float: float 7s ease-in-out infinite;
   --animate-pulse-ring: pulse-ring 2.6s ease-out infinite;
@@ -33,6 +36,19 @@
 }
 @keyframes marquee-rev {
   from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+/* Dịch đúng 100% bề rộng của chính bản sao, nên các bản nối đuôi nhau khít tuyệt đối */
+@keyframes marquee-track {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes track-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+@keyframes track-right {
+  from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
 @keyframes drift {
@@ -63,6 +79,16 @@ body {
 /* Gradient headlines, green -> orange (FPT family palette).
    Three variants so the same transition holds on photography,
    on the dark canvas, and on the light canvas. */
+/* Chữ gradient chỉ được tô trong hộp của phần tử. Dấu nặng, dấu mũ tiếng Việt
+   vươn ra ngoài hộp sẽ mất màu và trông như bị cắt, nên chừa thêm đáy và đỉnh.
+   Với thẻ inline, padding không làm xê dịch dòng nên hoàn toàn an toàn. */
+.grad-head,
+.grad-text,
+.grad-text-light {
+  padding-bottom: 0.14em;
+  padding-top: 0.04em;
+}
+
 .grad-head {
   background: linear-gradient(95deg, #8ed96b 0%, #cdc059 42%, #ff8a3c 100%);
   -webkit-background-clip: text;
@@ -106,4 +132,17 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Vòng loang quanh điểm văn phòng đang chọn trên bản đồ.
+   Dùng transform + transform-box thay vì animate thuộc tính `r`:
+   `r` chỉ animate được bằng CSS ở các trình duyệt mới. */
+.map-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-ping 2.4s ease-out infinite;
+}
+@keyframes map-ping {
+  0% { transform: scale(0.55); opacity: 0.55; }
+  100% { transform: scale(2.8); opacity: 0; }
 }

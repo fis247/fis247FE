@@ -2,56 +2,87 @@ import { PhotoTile } from "./PhotoTile";
 
 type Tile = { src: string; alt: string };
 
-// Hai hàng chạy ngược chiều nhau, mỗi hàng trộn đủ mảng việc:
-// điều hành, hạ tầng, thiết bị ngân hàng, triển khai, tự động hoá.
-const ROW_A: Tile[] = [
-  { src: "/images/subbanner2.jpg", alt: "Trung tâm điều hành FIS247 với màn hình giám sát" },
-  { src: "/images/subbanner4.jpg", alt: "Kỹ sư thao tác trên tủ rack thiết bị mạng" },
-  { src: "/images/subbanner7.jpg", alt: "Nhân viên hướng dẫn khách hàng sử dụng kiosk thông minh" },
-  { src: "/images/subbanner12.jpg", alt: "Kỹ sư kiểm tra hệ thống trong trung tâm dữ liệu" },
-  { src: "/images/subbanner9.jpg", alt: "Đội kỹ thuật lắp đặt thiết bị tại điểm giao dịch" },
-  { src: "/images/subbanner6.webp", alt: "Robot và cánh tay tự động trong kho vận hành" },
+const IMG = (n: number, alt: string): Tile => ({
+  src: `/images/subbanner${n}${n === 6 ? ".webp" : ".jpg"}`,
+  alt,
+});
+
+// Bốn dải, mỗi dải một thứ tự khác nhau để không bị lặp hình theo cột dọc.
+const ROWS: Tile[][] = [
+  [
+    IMG(2, "Trung tâm điều hành FIS247 với màn hình giám sát"),
+    IMG(4, "Kỹ sư thao tác trên tủ rack thiết bị mạng"),
+    IMG(7, "Nhân viên hướng dẫn khách hàng sử dụng kiosk thông minh"),
+    IMG(12, "Kỹ sư kiểm tra hệ thống trong trung tâm dữ liệu"),
+    IMG(9, "Đội kỹ thuật lắp đặt thiết bị tại điểm giao dịch"),
+    IMG(6, "Robot và cánh tay tự động trong kho vận hành"),
+  ],
+  [
+    IMG(1, "Nhân viên theo dõi bảng giám sát hệ thống"),
+    IMG(11, "Khách hàng thực hiện giao dịch trên máy ATM"),
+    IMG(8, "Kỹ thuật viên lắp đặt thiết bị mạng vào tủ rack"),
+    IMG(3, "Buổi làm việc triển khai giải pháp quản lý dịch vụ CNTT"),
+    IMG(10, "Cận cảnh sửa chữa, thay thế linh kiện thiết bị"),
+    IMG(5, "Kỹ thuật viên kiểm tra màn hình cảm ứng kiosk"),
+  ],
+  [
+    IMG(9, "Đội kỹ thuật lắp đặt thiết bị tại điểm giao dịch"),
+    IMG(6, "Robot và cánh tay tự động trong kho vận hành"),
+    IMG(3, "Buổi làm việc triển khai giải pháp quản lý dịch vụ CNTT"),
+    IMG(11, "Khách hàng thực hiện giao dịch trên máy ATM"),
+    IMG(4, "Kỹ sư thao tác trên tủ rack thiết bị mạng"),
+    IMG(10, "Cận cảnh sửa chữa, thay thế linh kiện thiết bị"),
+  ],
+  [
+    IMG(5, "Kỹ thuật viên kiểm tra màn hình cảm ứng kiosk"),
+    IMG(12, "Kỹ sư kiểm tra hệ thống trong trung tâm dữ liệu"),
+    IMG(1, "Nhân viên theo dõi bảng giám sát hệ thống"),
+    IMG(8, "Kỹ thuật viên lắp đặt thiết bị mạng vào tủ rack"),
+    IMG(7, "Nhân viên hướng dẫn khách hàng sử dụng kiosk thông minh"),
+    IMG(2, "Trung tâm điều hành FIS247 với màn hình giám sát"),
+  ],
 ];
 
-const ROW_B: Tile[] = [
-  { src: "/images/subbanner1.jpg", alt: "Nhân viên theo dõi bảng giám sát hệ thống" },
-  { src: "/images/subbanner11.jpg", alt: "Khách hàng thực hiện giao dịch trên máy ATM" },
-  { src: "/images/subbanner8.jpg", alt: "Kỹ thuật viên lắp đặt thiết bị mạng vào tủ rack" },
-  { src: "/images/subbanner3.jpg", alt: "Buổi làm việc triển khai giải pháp quản lý dịch vụ CNTT" },
-  { src: "/images/subbanner10.jpg", alt: "Cận cảnh sửa chữa, thay thế linh kiện thiết bị" },
-  { src: "/images/subbanner5.jpg", alt: "Kỹ thuật viên kiểm tra màn hình cảm ứng kiosk" },
-];
+// Lề đặt trên từng ô thay vì dùng `gap`: mỗi ô tự mang lề nên bề rộng một bản
+// sao là bội số chính xác, dịch 100% sẽ khít tuyệt đối.
+const TILE = "mr-5 h-[160px] w-[278px] shrink-0 rounded-xl sm:h-[210px] sm:w-[365px]";
+const TILE_SIZES = "(max-width: 640px) 278px, 365px";
 
-const TILE =
-  "h-[150px] w-[260px] shrink-0 rounded-xl sm:h-[190px] sm:w-[330px]";
-// Ô chỉ rộng tối đa 330px, báo cho next/image biết để không tải ảnh 2560px.
-const TILE_SIZES = "(max-width: 640px) 260px, 330px";
-
-/** Tilted, counter-scrolling band of imagery between the hero and the intro. */
-export function PhotoMosaic() {
+/** Một dải gồm 3 bản sao nối đuôi nhau — không có điểm đầu, không có điểm cuối. */
+function Row({ tiles, direction }: { tiles: Tile[]; direction: "left" | "right" }) {
+  const anim = direction === "left" ? "animate-track-left" : "animate-track-right";
   return (
-    <section className="relative -mt-10 overflow-hidden py-14">
-      <div className="-rotate-[4deg] scale-110 space-y-4">
-        <div className="edge-fade flex w-max animate-marquee gap-4">
-          {[...ROW_A, ...ROW_A].map((tile, i) => (
+    <div className="flex">
+      {[0, 1, 2].map((copy) => (
+        <div key={copy} className={`flex shrink-0 ${anim}`} aria-hidden={copy > 0}>
+          {tiles.map((tile, i) => (
             <PhotoTile
-              key={`a-${i}`}
+              key={`${tile.src}-${i}`}
               src={tile.src}
-              alt={i < ROW_A.length ? tile.alt : ""}
+              alt={copy === 0 ? tile.alt : ""}
               sizes={TILE_SIZES}
               className={TILE}
             />
           ))}
         </div>
-        <div className="edge-fade flex w-max animate-marquee-rev gap-4">
-          {[...ROW_B, ...ROW_B].map((tile, i) => (
-            <PhotoTile
-              key={`b-${i}`}
-              src={tile.src}
-              alt={i < ROW_B.length ? tile.alt : ""}
-              sizes={TILE_SIZES}
-              className={TILE}
-            />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Dải ảnh nghiêng giữa hero và phần giới thiệu.
+ * Chiều cao section cố định, còn stack 4 dải bên trong cao hơn nên tràn ra
+ * và bị cắt — chính phần tràn đó lấp kín hai góc chéo do phép xoay tạo ra.
+ */
+export function PhotoMosaic() {
+  return (
+    <section className="relative -mt-10 h-[600px] overflow-hidden sm:h-[720px]">
+      {/* Lớp mask bám theo mép màn hình để vệt mờ hai bên nằm đúng chỗ */}
+      <div className="edge-fade absolute inset-0">
+        <div className="absolute left-1/2 top-1/2 w-[114%] -translate-x-1/2 -translate-y-1/2 -rotate-[4deg] space-y-5">
+          {ROWS.map((tiles, i) => (
+            <Row key={i} tiles={tiles} direction={i % 2 === 0 ? "left" : "right"} />
           ))}
         </div>
       </div>

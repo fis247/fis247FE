@@ -53,7 +53,7 @@ export function Hero() {
   const slide = SLIDES[index];
 
   return (
-    <section id="top" className="relative flex min-h-[88vh] items-center overflow-hidden pt-[88px]">
+    <section id="top" data-hero className="relative flex min-h-[88vh] items-center overflow-hidden pt-[88px]">
       {/* Photography */}
       <AnimatePresence initial={false}>
         <motion.div
@@ -100,7 +100,9 @@ export function Hero() {
                 </span>
               </div>
 
-              <h1 className="grad-head mt-7 whitespace-pre-line text-[40px] font-extrabold leading-[1.06] tracking-[-0.02em] sm:text-[56px] lg:text-[66px] xl:text-[78px]">
+              {/* leading phải đủ rộng: chữ tô gradient chỉ hiện trong khung dòng,
+                  bó sát quá thì dấu thanh và dấu nặng tiếng Việt bị cắt mất */}
+              <h1 className="grad-head mt-7 whitespace-pre-line text-[40px] font-extrabold leading-[1.18] tracking-[-0.02em] sm:text-[56px] lg:text-[66px] xl:text-[78px]">
                 {slide.title}
               </h1>
 
