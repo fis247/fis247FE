@@ -28,8 +28,11 @@ export function AutoScrollTo({ id, offset = 88 }: { id: string; offset?: number 
       const el = document.getElementById(id);
       if (!el) return;
 
-      // Dọn tham số khỏi thanh địa chỉ để tải lại trang không tự cuộn nữa
-      history.replaceState(null, "", window.location.pathname);
+      // Chỉ bỏ `scroll` để tải lại trang không tự cuộn nữa; `model` phải giữ
+      // lại, không thì địa chỉ đang xem mất luôn model và copy link ra sẽ sai
+      const url = new URL(window.location.href);
+      url.searchParams.delete("scroll");
+      history.replaceState(null, "", url.pathname + url.search);
 
       const to = el.getBoundingClientRect().top + window.scrollY - offset;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

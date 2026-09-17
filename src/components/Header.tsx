@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 // chính trang đó và không đi đâu cả.
 const NAV = [
   { label: "Trang chủ", href: "/" },
-  { label: "Giới thiệu", href: "/#gioi-thieu" },
+  { label: "Giới thiệu", href: "/gioi-thieu" },
   { label: "Sản phẩm", href: "/san-pham?scroll=robot" },
-  { label: "Tin tức", href: "/#tin-tuc" },
+  { label: "Tin tức", href: "/tin-tuc" },
   { label: "Liên hệ", href: "/lien-he" },
 ];
 

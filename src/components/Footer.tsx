@@ -1,4 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
+
+import { ROBOTS, ROBOT_CATS } from "@/data/robots";
 
 // Thông tin lấy nguyên văn từ chân trang fis247.fpt.com
 const COMPANY = "CÔNG TY TNHH FPT IS";
@@ -54,35 +57,29 @@ const CONTACT = [
   },
 ];
 
-const COLUMNS = [
+type Col = { title: string; links: { label: string; href?: string }[] };
+
+/**
+ * Mục nào có trang thật thì mới làm link. Trước đây mọi mục của Dịch vụ và Sản
+ * phẩm đều trỏ `/#san-pham`, mà neo đó nay là dải robot — bấm "Bảo hành" lại
+ * nhảy tới hàng robot. Không có đích đúng thì để chữ thường còn hơn link sai.
+ */
+const COLUMNS: Col[] = [
   {
-    title: "Dịch vụ",
-    href: "/#san-pham",
-    links: [
-      "Bảo hành",
-      "Bảo dưỡng bảo trì",
-      "Sửa chữa, thay thế linh kiện",
-      "Di chuyển Trung tâm dữ liệu, Phòng máy chủ",
-      "Tư vấn quy trình và triển khai công cụ quản lý dịch vụ CNTT (ITSM)",
-      "Triển khai thiết bị chuyên dụng",
-      "Cho thuê nguồn lực và thiết bị CNTT",
-    ],
-  },
-  {
-    title: "Sản phẩm",
-    href: "/#san-pham",
-    links: [
-      "AKA247 – Công cụ quản lý Dịch vụ CNTT",
-      "Thiết bị bảo vệ máy ATM",
-      "Thiết bị đọc thẻ căn cước công dân chuyên dụng",
-      "Kiosk thông minh",
-      "Thiết bị thu sóng truyền thanh chuyên dụng",
-    ],
+    title: "Robot",
+    links: ROBOT_CATS.map((c) => ({
+      label: `Robot ${c.label}`,
+      // trỏ thẳng tới model đầu tiên của nhóm, sang trang là mở đúng nhóm đó
+      href: `/san-pham?model=${ROBOTS.find((r) => r.cat === c.id)!.slug}&scroll=robot`,
+    })),
   },
   {
     title: "Liên hệ",
-    href: "/lien-he",
-    links: ["Về FIS247", "Văn phòng hỗ trợ", "Liên hệ"],
+    links: [
+      { label: "Về FIS247", href: "/lien-he" },
+      { label: "Văn phòng hỗ trợ", href: "/lien-he#van-phong" },
+      { label: "Liên hệ", href: "/lien-he" },
+    ],
   },
 ];
 
@@ -117,7 +114,7 @@ export function Footer() {
         </a>
 
         {/* Cột trái rộng hơn vì danh sách dịch vụ có những dòng khá dài */}
-        <div className="mt-16 grid gap-x-10 gap-y-12 border-t border-white/10 pt-14 sm:grid-cols-2 lg:grid-cols-[1.5fr_1.1fr_1.1fr_0.75fr]">
+        <div className="mt-16 grid gap-x-10 gap-y-12 border-t border-white/10 pt-14 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_0.8fr]">
           <div>
             {/* Logo và tên công ty căn giữa theo cột; danh sách liên hệ bên dưới
                 vẫn căn trái để các dòng địa chỉ dài đọc được */}
@@ -170,13 +167,19 @@ export function Footer() {
               </h3>
               <ul className="mt-5 space-y-3.5">
                 {col.links.map((l) => (
-                  <li key={l}>
-                    <a
-                      href={col.href}
-                      className="text-[15.5px] leading-relaxed text-white/65 transition-colors hover:text-orange-2"
-                    >
-                      {l}
-                    </a>
+                  <li key={l.label}>
+                    {l.href ? (
+                      <Link
+                        href={l.href}
+                        className="text-[15.5px] leading-relaxed text-white/65 transition-colors hover:text-orange-2"
+                      >
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <span className="text-[15.5px] leading-relaxed text-white/65">
+                        {l.label}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

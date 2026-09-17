@@ -10,7 +10,13 @@ export const metadata: Metadata = {
     "Robot dịch vụ và thiết bị chuyên dụng do FIS247 cung cấp: robot nâng hạ, xe nâng, giao hàng, vệ sinh, lễ tân và khử khuẩn.",
 };
 
-export default function SanPhamPage() {
+export default async function SanPhamPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ model?: string }>;
+}) {
+  const { model } = await searchParams;
+
   return (
     <>
       <AutoScrollTo id="robot" />
@@ -23,7 +29,7 @@ export default function SanPhamPage() {
         imageAlt="Cánh tay robot trong buồng sản xuất tự động"
         compact
       />
-      <RobotShowcase />
+      <RobotShowcase initialModel={model} />
     </>
   );
 }

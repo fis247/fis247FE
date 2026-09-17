@@ -8,10 +8,13 @@ import { RobotGrid } from "./RobotGrid";
 import { RobotSpecStrip } from "./RobotSpecStrip";
 import { RobotStage } from "./RobotStage";
 
-export function RobotShowcase() {
-  const [cat, setCat] = useState<RobotCat>("nang-ha");
+/** `initialModel` do trang truyền xuống từ ?model=<slug>, đọc ở phía server nên
+    HTML dựng sẵn đã mở đúng model — không chớp sang model khác khi hydrate. */
+export function RobotShowcase({ initialModel }: { initialModel?: string }) {
+  const start = ROBOTS.find((r) => r.slug === initialModel);
+  const [cat, setCat] = useState<RobotCat>(start?.cat ?? "nang-ha");
   const models = useMemo(() => ROBOTS.filter((r) => r.cat === cat), [cat]);
-  const [slug, setSlug] = useState(models[0].slug);
+  const [slug, setSlug] = useState(start?.slug ?? models[0].slug);
 
   // Đổi nhóm thì model đang chọn không còn trong nhóm mới
   const robot = models.find((r) => r.slug === slug) ?? models[0];

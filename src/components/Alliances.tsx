@@ -44,7 +44,12 @@ const LOGOS: Logo[] = [
 export function Alliances() {
   return (
     <section className="relative overflow-hidden bg-ink py-20 sm:py-24">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+      {/* Trước đây là một nét kẻ 1px sáng ở mép trên — chính nó tạo ra đường
+          phân cách rõ giữa hai khối. Thay bằng lớp tan dần về đúng màu nền. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-t from-transparent to-ink"
+      />
 
       <div className="relative mx-auto max-w-[1280px] px-5 sm:px-8">
         <Reveal className="text-center">
